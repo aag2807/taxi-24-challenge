@@ -1,6 +1,5 @@
-import { BaseEntity } from '../models/base-entity.model';
 
-export abstract class BaseRepository<T extends BaseEntity> {
+export abstract class BaseRepository<T extends Object> {
   public abstract create(entity: Partial<T>): Promise<T>;
 
   public abstract read(id: string): Promise<T>;
