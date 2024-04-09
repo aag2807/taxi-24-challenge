@@ -1,0 +1,1 @@
+export type THealthResponseValue = 'Ok' | 'N/A' | 'Error';
