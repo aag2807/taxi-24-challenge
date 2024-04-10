@@ -10,6 +10,7 @@ import {
 import { Driver } from '../../driver/models/driver.entity';
 import { Passenger } from '../../passenger/models/passenger.entity';
 import { Invoice } from '../../invoice/models/invoice.entity';
+import { Nullable } from '../../../common/types/common.types';
 
 @Entity('trips')
 export class Trip {
@@ -37,7 +38,7 @@ export class Trip {
   public endTime: Date;
 
   @Column({ length: 50 })
-  public status: string;
+  public status: Nullable<'Completed'| 'Active' | 'Canceled'>;
 
   @OneToOne(() => Invoice, invoice => invoice.trip)
   public invoice: Invoice;
