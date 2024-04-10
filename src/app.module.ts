@@ -8,6 +8,11 @@ import { HealthCheckService } from './core/health/services/health-check/health-c
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
+import { DriverService } from './core/driver/services/driver/driver.service';
+import { Driver } from './core/driver/models/driver.entity';
+import { Passenger } from './core/passenger/models/passenger.entity';
+import { Trip } from './core/trip/models/trip.entity';
+import { Invoice } from './core/invoice/models/invoice.entity';
 
 config();
 
@@ -21,16 +26,18 @@ config();
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
+      entities: [Driver, Passenger, Trip, Invoice],
+      synchronize: true,
     }),
-    PersistenceModule
+    PersistenceModule,
   ],
   controllers: [
     DriverController,
     TripController,
     HealthController,
-    PassengerController
+    PassengerController,
   ],
-  providers: [HealthCheckService],
+  providers: [HealthCheckService, DriverService],
 })
 export class AppModule {
 }

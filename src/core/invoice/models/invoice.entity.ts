@@ -16,6 +16,6 @@ export class Invoice {
   @CreateDateColumn()
   public issueDate: Date;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, default: '' })
   public paymentStatus: string;
 }

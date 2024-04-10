@@ -11,6 +11,7 @@ import { Driver } from '../../driver/models/driver.entity';
 import { Passenger } from '../../passenger/models/passenger.entity';
 import { Invoice } from '../../invoice/models/invoice.entity';
 import { Nullable } from '../../../common/types/common.types';
+import { TripStatus } from '../types/trip-status.type';
 
 @Entity('trips')
 export class Trip {
@@ -34,10 +35,10 @@ export class Trip {
   @CreateDateColumn()
   public startTime: Date;
 
-  @UpdateDateColumn({ nullable: true }) // endTime can be null for ongoing trips
+  @UpdateDateColumn({ nullable: true })
   public endTime: Date;
 
-  @Column({ length: 50 })
+  @Column({ length: 50, type: 'varchar' })
   public status: Nullable<'Completed'| 'Active' | 'Canceled'>;
 
   @OneToOne(() => Invoice, invoice => invoice.trip)

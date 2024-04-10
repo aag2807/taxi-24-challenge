@@ -1,0 +1,1 @@
+export type TripStatus = 'Completed' | 'Active' | 'Canceled' | 'Pending' | '';

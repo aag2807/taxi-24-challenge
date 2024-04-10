@@ -5,34 +5,32 @@ import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class DriverRepository extends BaseRepository<Driver>
-{
-  constructor( @InjectRepository(Driver) private userRepository: Repository<Driver>) {
+export class DriverRepository extends BaseRepository<Driver> {
+  constructor(@InjectRepository(Driver) private driverRepository: Repository<Driver>) {
     super();
   }
 
   public async create(entity: Partial<Driver>): Promise<Driver> {
+    return this.driverRepository.create(entity);
+  }
+
+  public async delete(id: string): Promise<Driver> {
     return Promise.resolve(undefined);
   }
 
-  delete(id: string): Promise<Driver> {
-    return Promise.resolve(undefined);
-  }
-
-  exists(id: string): Promise<boolean> {
+  public async exists(id: string): Promise<boolean> {
     return Promise.resolve(false);
   }
 
-  read(id: string): Promise<Driver> {
+  public async read(id: string): Promise<Driver> {
     return Promise.resolve(undefined);
   }
 
-  readAll(): Promise<Driver[]> {
-    return Promise.resolve([]);
+  public async readAll(): Promise<Driver[]> {
+    return await this.driverRepository.find();
   }
 
-  update(entity: Driver): Promise<Driver> {
+  public async update(entity: Driver): Promise<Driver> {
     return Promise.resolve(undefined);
   }
-
 }

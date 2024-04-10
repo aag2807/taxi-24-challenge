@@ -6,13 +6,13 @@ export class Passenger {
   @PrimaryGeneratedColumn()
   public passengerId: number;
 
-  @Column({ length: 100 })
+  @Column({ length: 100, default: '' })
   public fullName: string;
 
   @Column({ type: 'varchar', length: 100, unique: true })
   public email: string;
 
-  @Column({ type: 'varchar', length: 15, unique: true })
+  @Column({ type: 'varchar', length: 15, unique: true, nullable: true })
   public phoneNumber: string;
 
   @OneToMany(() => Trip, trip => trip.passenger)
