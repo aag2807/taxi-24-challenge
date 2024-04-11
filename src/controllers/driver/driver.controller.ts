@@ -40,7 +40,6 @@ export class DriverController {
   @ApiOkResponse({ description: 'Driver', type: Driver })
   public async getDriverById(@Param('id') id: number): Promise<Driver> {
     ArgumentGuard.notNull(id, 'id cannot be null to get a driver');
-    ArgumentGuard.greaterThan(id, 0, 'id must be greater than 0');
 
     return await this.driverService.getDriverById(+id);
   }

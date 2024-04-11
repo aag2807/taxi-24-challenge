@@ -9,26 +9,57 @@ export class MockPassengerRepository extends BaseRepository<Passenger> implement
   private inMemoryDb: Passenger[] = [];
 
   public async create(entity: Partial<Passenger>): Promise<Passenger> {
-    return Promise.resolve(undefined);
+    return new Promise((res) => {
+      const passenger = new Passenger();
+      passenger.fullName = entity.fullName;
+      passenger.email = entity.email;
+      passenger.phoneNumber = entity.phoneNumber;
+      passenger.passengerId = this.inMemoryDb.length + 1;
+      this.inMemoryDb.push(passenger);
+      res(passenger);
+    });
   }
 
   public async delete(id: number): Promise<Passenger> {
-    return Promise.resolve(undefined);
+    return new Promise((res) => {
+      const passenger = this.inMemoryDb.find((p) => p.passengerId === id);
+      if (passenger) {
+        this.inMemoryDb = this.inMemoryDb.filter((p) => p.passengerId !== id);
+      }
+      res(passenger);
+    })
   }
 
   public async exists(id: number): Promise<boolean> {
-    return Promise.resolve(false);
+    return new Promise((res) => {
+      res(this.inMemoryDb.some((p) => p.passengerId === id));
+    });
   }
 
   public async read(id: number): Promise<Passenger> {
-    return Promise.resolve(undefined);
+    return new Promise((res) => {
+      const passenger = this.inMemoryDb.find((p) => p.passengerId === id);
+      if(!!passenger) {
+        res(passenger);
+        return;
+      }
+      res(null);
+    });
   }
 
   public async readAll(): Promise<Passenger[]> {
-    return Promise.resolve([]);
+    return Promise.resolve(this.inMemoryDb);
   }
 
   public async update(entity: Passenger): Promise<Passenger> {
-    return Promise.resolve(undefined);
+    return new Promise((res) => {
+      const passenger = this.inMemoryDb.find((p) => p.passengerId === entity.passengerId);
+      if (passenger) {
+        passenger.fullName = entity.fullName;
+        passenger.email = entity.email;
+        passenger.phoneNumber = entity.phoneNumber;
+      }
+      res(passenger);
+    });
   }
 }

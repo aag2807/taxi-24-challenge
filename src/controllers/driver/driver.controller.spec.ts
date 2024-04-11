@@ -21,6 +21,10 @@ describe('DriverController', () => {
     await app.init();
   });
 
+  afterAll(async () => {
+    await app.close();
+  });
+
   it('should empty array if no drivers are saved when trying to get all drivers', () => {
     return request(app.getHttpServer())
       .get('/driver/all')
@@ -222,9 +226,9 @@ describe('DriverController', () => {
         isActive: false,
         location: '1.00,15.00', // africa
         trips: [],
-      }
+      },
     ];
-    mockDrivers.forEach(async (driver) => await driverRepository.create(driver) )
+    mockDrivers.forEach(async (driver) => await driverRepository.create(driver));
 
     return request(app.getHttpServer())
       .get('/driver/all/nearby?latitude=34.0522&longitude=-118.2437')
@@ -246,5 +250,5 @@ describe('DriverController', () => {
         expect(body).toBeDefined();
         expect(body.message).toBe('latitude has to be provided to get drivers in radius');
       });
-  })
+  });
 });

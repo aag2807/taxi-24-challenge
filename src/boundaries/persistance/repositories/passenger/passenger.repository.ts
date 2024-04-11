@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { BaseRepository } from '../base.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Driver } from '../../../../core/driver/models/driver.entity';
 import { Repository } from 'typeorm';
 import { Passenger } from '../../../../core/passenger/models/passenger.entity';
 import { IPassengerRepository } from './passenger-repository.interface';
+import { Nullable } from '../../../../common/types/common.types';
 
 @Injectable()
 export class PassengerRepository extends BaseRepository<Passenger> implements IPassengerRepository {
-  constructor(@InjectRepository(Driver) private readonly dbContext: Repository<Passenger>) {
+  constructor(@InjectRepository(Passenger) private readonly dbContext: Repository<Passenger>) {
     super();
   }
 
@@ -25,8 +25,13 @@ export class PassengerRepository extends BaseRepository<Passenger> implements IP
     return await this.dbContext.count({ where: { passengerId: id } }) > 0;
   }
 
-  public async read(id: number): Promise<Passenger> {
-    return await this.dbContext.findOne({ where: { passengerId: id } });
+  public async read(id: number): Promise<Nullable<Passenger>> {
+    try {
+      return await this.dbContext.findOne({ where: { passengerId: id } });
+    }
+    catch (e) {
+      return null;
+    }
   }
 
   public async readAll(): Promise<Passenger[]> {

@@ -29,7 +29,6 @@ export class DriverService {
   }
 
   public async getDriverById(id: number): Promise<Driver> {
-    ArgumentGuard.notNull(id, 'id cannot be null to get a driver');
     ArgumentGuard.greaterThan(id, 0);
 
     const driver = await this.repo.read(id);
