@@ -6,10 +6,6 @@ export class Invoice {
   @PrimaryGeneratedColumn()
   public invoiceId: number;
 
-  @OneToOne(() => Trip)
-  @JoinColumn({ name: 'tripId' })
-  public trip: Trip;
-
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   public amount: number;
 
@@ -18,4 +14,8 @@ export class Invoice {
 
   @Column({ type: 'varchar', length: 100, default: '' })
   public paymentStatus: string;
+
+  @OneToOne(() => Trip)
+  @JoinColumn({ name: 'tripId' })
+  public trip: Trip;
 }

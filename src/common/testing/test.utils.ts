@@ -1,24 +1,35 @@
 import { ModuleMetadata } from '@nestjs/common/interfaces/modules/module-metadata.interface';
-import { TestingModuleBuilder } from '@nestjs/testing/testing-module.builder';
 import { Test, TestingModule } from '@nestjs/testing';
 import { mergeDeep } from '../lib/funtions/util-functions';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Driver } from '../../core/driver/models/driver.entity';
-import { Passenger } from '../../core/passenger/models/passenger.entity';
-import { Trip } from '../../core/trip/models/trip.entity';
-import { Invoice } from '../../core/invoice/models/invoice.entity';
+import { DriverRepository } from '../../boundaries/persistance/repositories/driver/driver.repository';
+import { MockDriverRepository } from './mock-repositories/driver.repository.mock';
+import { InvoiceRepository } from '../../boundaries/persistance/repositories/invoice/invoice.repository';
+import { MockInvoiceRepository } from './mock-repositories/invoice.repository.mock';
+import { PassengerRepository } from '../../boundaries/persistance/repositories/passenger/passenger.repository';
+import { MockPassengerRepository } from './mock-repositories/passenger.repository.mock';
+import { TripRepository } from '../../boundaries/persistance/repositories/trips/trip.repository';
+import { MockTripRepository } from './mock-repositories/trip.repository.mock';
 
 export class TestUtils {
   public static async configureTestingModule(moduleDef: Partial<ModuleMetadata>): Promise<TestingModule> {
     const config: ModuleMetadata = mergeDeep({
-      imports: [
-        TypeOrmModule.forRoot({
-          type: 'sqlite',
-          database: ':memory:',
-          entities: [Driver, Passenger, Trip, Invoice],
-          logging: true,
-          synchronize: true,
-        })
+      providers: [
+        {
+          provide: DriverRepository,
+          useFactory: () => new MockDriverRepository(),
+        },
+        {
+          provide: InvoiceRepository,
+          useFactory: () => new MockInvoiceRepository(),
+        },
+        {
+          provide: PassengerRepository,
+          useFactory: () => new MockPassengerRepository(),
+        },
+        {
+          provide: TripRepository,
+          useFactory: () => new MockTripRepository(),
+        },
       ],
     }, moduleDef);
 

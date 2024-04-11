@@ -14,23 +14,28 @@ export class DriverRepository extends BaseRepository<Driver> {
     return this.driverRepository.create(entity);
   }
 
-  public async delete(id: string): Promise<Driver> {
-    return Promise.resolve(undefined);
+  public async delete(id: number): Promise<Driver> {
+    const result = await this.driverRepository.delete({ driverId: id });
+    return result.raw;
   }
 
-  public async exists(id: string): Promise<boolean> {
-    return Promise.resolve(false);
+  public async exists(id: number): Promise<boolean> {
+    return await this.driverRepository.count({ where: { driverId: id } }) > 0;
   }
 
-  public async read(id: string): Promise<Driver> {
-    return Promise.resolve(undefined);
+  public async read(id: number): Promise<Driver> {
+    return await this.driverRepository.findOne({ where: { driverId: id } });
   }
 
   public async readAll(): Promise<Driver[]> {
     return await this.driverRepository.find();
   }
 
+  public async getAllActiveDrivers(): Promise<Driver[]> {
+    return await this.driverRepository.find({ where: { isActive: true } });
+  }
+
   public async update(entity: Driver): Promise<Driver> {
-    return Promise.resolve(undefined);
+    return await this.driverRepository.save(entity);
   }
 }

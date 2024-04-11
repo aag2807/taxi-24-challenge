@@ -13,4 +13,28 @@ export class ArgumentGuard
       throw new ArgumentGuardException(message);
     }
   }
+
+  public static greaterThanOrEqual(val: number, min: number, message: string = 'value is less than min') {
+    if (val < min) {
+      throw new ArgumentGuardException(message);
+    }
+  }
+
+  public static lessThanOrEqual(val: number, max: number, message: string = 'value is greater than max') {
+    if (val > max) {
+      throw new ArgumentGuardException(message);
+    }
+  }
+
+  public static greaterThan(val: number, min: number, message: string = 'value is less than or equal to min') {
+    if (val <= min) {
+      throw new ArgumentGuardException(message);
+    }
+  }
+
+  public static lessThan(val: number, max: number, message: string = 'value is greater than or equal to max') {
+    if (val >= max) {
+      throw new ArgumentGuardException(message);
+    }
+  }
 }
