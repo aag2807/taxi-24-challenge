@@ -46,12 +46,12 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
   }
 
   public read(id: number): Promise<Driver> {
-    return new Promise((res, rej) => {
+    return new Promise((res) => {
       const driver = this.inMemoryDb.find(d => d.driverId === id);
       if (driver) {
         res(driver);
       } else {
-        rej(null);
+        res(null);
       }
     });
   }

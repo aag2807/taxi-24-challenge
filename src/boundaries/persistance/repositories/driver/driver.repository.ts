@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { IDriverRepository } from './driver-repository.interface';
+import { Nullable } from '../../../../common/types/common.types';
 
 @Injectable()
 export class DriverRepository extends BaseRepository<Driver> implements IDriverRepository {
@@ -24,8 +25,12 @@ export class DriverRepository extends BaseRepository<Driver> implements IDriverR
     return await this.dbContext.count({ where: { driverId: id } }) > 0;
   }
 
-  public async read(id: number): Promise<Driver> {
-    return await this.dbContext.findOne({ where: { driverId: id } });
+  public async read(id: number): Promise<Nullable<Driver>> {
+    try {
+      return await this.dbContext.findOne({ where: { driverId: id } });
+    }catch (e) {
+      return null ;
+    }
   }
 
   public async readAll(): Promise<Driver[]> {

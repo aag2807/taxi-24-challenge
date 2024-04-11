@@ -1,26 +1,33 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
 import { HealthController } from './health.controller';
-import { TestUtils } from '../../common/testing/test.utils';
+import { INestApplication } from '@nestjs/common';
+import * as request from 'supertest';
 
 describe('HealthController', () => {
-  let controller: HealthController;
+  let app: INestApplication;
 
-  beforeEach(async () => {
-    const module: TestingModule = await TestUtils.configureTestingModule({
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
+      providers: [],
       controllers: [HealthController],
-    });
+    })
+      .compile();
 
-    controller = module.get<HealthController>(HealthController);
+    app = moduleRef.createNestApplication();
+    await app.init();
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
+  it('should return valid Response on GET /health', () => {
+    return request(app.getHttpServer())
+      .get('/health')
+      .expect(200)
+      .expect({
+        api: 'Ok',
+        database: 'Ok',
+      });
   });
 
-  it('should return a health object', () => {
-    expect(controller.getHealth()).toEqual({
-      api: 'Ok',
-      database: 'Ok',
-    });
+  afterAll(async () => {
+    await app.close();
   });
 });

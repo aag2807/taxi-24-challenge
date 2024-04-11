@@ -11,7 +11,7 @@ export class DriverService {
   constructor(private readonly repo: DriverRepository) {}
 
   public async getDrivers(): Promise<Driver[]> {
-    return this.repo.readAll();
+    return await this.repo.readAll();
   }
 
   public async getAllActiveDrivers(): Promise<Driver[]> {
@@ -19,9 +19,6 @@ export class DriverService {
   }
 
   public async getDriversInKmRadius(lat: number, lon: number, radiusInKm: number): Promise<Driver[]> {
-    ArgumentGuard.notNull(lat, 'lat cannot be null to get drivers in radius');
-    ArgumentGuard.notNull(lon, 'lon cannot be null to get drivers in radius');
-    ArgumentGuard.notNull(radiusInKm, 'radiusInKm cannot be null to get drivers in radius');
     ArgumentGuard.greaterThan(lat, -90, 'latitude must be greater than -90');
     ArgumentGuard.lessThan(lat, 90, 'latitude must be less than 90');
     ArgumentGuard.greaterThan(lon, -180, 'longitude must be greater than -180');
@@ -35,7 +32,10 @@ export class DriverService {
     ArgumentGuard.notNull(id, 'id cannot be null to get a driver');
     ArgumentGuard.greaterThan(id, 0);
 
-    return await this.repo.read(id);
+    const driver = await this.repo.read(id);
+    ArgumentGuard.notNull(driver, 'driver not found', 404);
+
+    return driver;
   }
 
   public async createDriver(createDriverAggregate: CreateDriver): Promise<Driver> {
