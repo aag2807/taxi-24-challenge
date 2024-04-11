@@ -1,8 +1,9 @@
 import { BaseRepository } from '../../../boundaries/persistance/repositories/base.repository';
 import { Driver } from '../../../core/driver/models/driver.entity';
+import { IDriverRepository } from '../../../boundaries/persistance/repositories/driver/driver-repository.interface';
 
 
-export class MockDriverRepository extends BaseRepository<Driver> {
+export class MockDriverRepository extends BaseRepository<Driver> implements IDriverRepository {
   private inMemoryDb: Driver[] = [];
 
   public create(entity: Partial<Driver>): Promise<Driver> {
@@ -52,11 +53,11 @@ export class MockDriverRepository extends BaseRepository<Driver> {
       } else {
         rej(null);
       }
-    })
+    });
   }
 
   public readAll(): Promise<Driver[]> {
-    return new Promise( (res) => res(this.inMemoryDb));
+    return Promise.resolve(this.inMemoryDb);
   }
 
   public update(entity: Driver): Promise<Driver> {
@@ -74,12 +75,27 @@ export class MockDriverRepository extends BaseRepository<Driver> {
       } else {
         rej(null);
       }
-    })
+    });
   }
 
   public getAllActiveDrivers(): Promise<Driver[]> {
     return new Promise((res) => {
       res(this.inMemoryDb.filter(d => d.isActive));
+    });
+  }
+
+  public findNearbyDrivers(queryLat: number, queryLon: number, radius: number): Promise<Driver[]> {
+    const radiusInDegrees = radius / 111000; // Very rough conversion of meters to degrees for mocking purposes
+    return new Promise((res) => {
+      const nearbyDrivers = this.inMemoryDb.filter(driver => {
+        const [driverLat, driverLon] = driver.location.split(',').map(Number);
+        const distance = Math.sqrt(
+          Math.pow(driverLat - queryLat, 2) +
+          Math.pow(driverLon - queryLon, 2)
+        );
+        return distance < radiusInDegrees && driver.isActive;
+      });
+      res(nearbyDrivers);
     });
   }
 }

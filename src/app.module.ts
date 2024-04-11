@@ -4,15 +4,17 @@ import { DriverController } from './controllers/driver/driver.controller';
 import { TripController } from './controllers/trip/trip.controller';
 import { HealthController } from './controllers/health/health.controller';
 import { PassengerController } from './controllers/passenger/passenger.controller';
-import { HealthCheckService } from './core/health/services/health-check/health-check.service';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv';
-import { DriverService } from './core/driver/services/driver/driver.service';
+import { DriverService } from './core/driver/services/driver.service';
 import { Driver } from './core/driver/models/driver.entity';
 import { Passenger } from './core/passenger/models/passenger.entity';
 import { Trip } from './core/trip/models/trip.entity';
 import { Invoice } from './core/invoice/models/invoice.entity';
+import { TripService } from './core/trip/services/trip.service';
+import { PassengerService } from './core/passenger/services/passenger.service';
+import { InvoiceService } from './core/invoice/services/invoice.service';
 
 config();
 
@@ -37,7 +39,7 @@ config();
     HealthController,
     PassengerController,
   ],
-  providers: [HealthCheckService, DriverService],
+  providers: [DriverService, TripService, PassengerService, InvoiceService],
 })
 export class AppModule {
 }

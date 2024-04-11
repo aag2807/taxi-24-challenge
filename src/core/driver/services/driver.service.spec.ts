@@ -1,8 +1,8 @@
 import { TestingModule } from '@nestjs/testing';
 import { DriverService } from './driver.service';
-import { TestUtils } from '../../../../common/testing/test.utils';
-import { DriverRepository } from '../../../../boundaries/persistance/repositories/driver/driver.repository';
-import { CreateDriver } from '../../aggregates/createDriver.aggregate';
+import { TestUtils } from '../../../common/testing/test.utils';
+import { DriverRepository } from '../../../boundaries/persistance/repositories/driver/driver.repository';
+import { CreateDriver } from '../aggregates/createDriver.aggregate';
 
 describe('DriverService', () => {
   let service: DriverService;
@@ -86,6 +86,37 @@ describe('DriverService', () => {
     expect(driver.driverId).toBe(1);
   });
 
+  it('should get drivers in a radius', async () => {
+    const mockDrivers = [
+      {
+        driverId: 1,
+        fullName: 'John Doe',
+        email: 'john@example.com',
+        licenseNumber: 'D12345',
+        phoneNumber: '5551234567',
+        isActive: true,
+        location: '34.0522,-118.2437', // Los Angeles
+        trips: [],
+      },
+      {
+        driverId: 2,
+        fullName: 'Jane Smith',
+        email: 'jane@example.com',
+        licenseNumber: 'D67890',
+        phoneNumber: '5557654321',
+        isActive: false,
+        location: '1.00,15.00', // africa
+        trips: [],
+      }
+    ];
+    mockDrivers.forEach(async (driver) => await driverRepository.create(driver) )
+
+    const activeDrivers = await service.getDriversInKmRadius(34.0522, -118.2437, 3000);
+
+    expect(activeDrivers).toHaveLength(1);
+    expect(activeDrivers[0].driverId).toBe(1);
+    expect(activeDrivers[0].fullName).toBe('John Doe');
+  })
 
   const createDummyDrivers = async () => {
     await driverRepository.create({

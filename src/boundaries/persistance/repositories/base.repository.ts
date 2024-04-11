@@ -1,5 +1,6 @@
+import { IBaseRepository } from '../base-repository.interface';
 
-export abstract class BaseRepository<T extends Object> {
+export abstract class BaseRepository<T extends Object> implements IBaseRepository<T>{
   public abstract create(entity: Partial<T>): Promise<T>;
 
   public abstract read(id: number): Promise<T>;

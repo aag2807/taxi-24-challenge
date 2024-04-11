@@ -3,39 +3,54 @@ import { Driver } from '../../../../core/driver/models/driver.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
+import { IDriverRepository } from './driver-repository.interface';
 
 @Injectable()
-export class DriverRepository extends BaseRepository<Driver> {
-  constructor(@InjectRepository(Driver) private driverRepository: Repository<Driver>) {
+export class DriverRepository extends BaseRepository<Driver> implements IDriverRepository {
+  constructor(@InjectRepository(Driver) private readonly dbContext: Repository<Driver>) {
     super();
   }
 
   public async create(entity: Partial<Driver>): Promise<Driver> {
-    return this.driverRepository.create(entity);
+    return this.dbContext.create(entity);
   }
 
   public async delete(id: number): Promise<Driver> {
-    const result = await this.driverRepository.delete({ driverId: id });
+    const result = await this.dbContext.delete({ driverId: id });
     return result.raw;
   }
 
   public async exists(id: number): Promise<boolean> {
-    return await this.driverRepository.count({ where: { driverId: id } }) > 0;
+    return await this.dbContext.count({ where: { driverId: id } }) > 0;
   }
 
   public async read(id: number): Promise<Driver> {
-    return await this.driverRepository.findOne({ where: { driverId: id } });
+    return await this.dbContext.findOne({ where: { driverId: id } });
   }
 
   public async readAll(): Promise<Driver[]> {
-    return await this.driverRepository.find();
+    return await this.dbContext.find();
   }
 
   public async getAllActiveDrivers(): Promise<Driver[]> {
-    return await this.driverRepository.find({ where: { isActive: true } });
+    return await this.dbContext.find({ where: { isActive: true } });
   }
 
   public async update(entity: Driver): Promise<Driver> {
-    return await this.driverRepository.save(entity);
+    return await this.dbContext.save(entity);
+  }
+
+  public async findNearbyDrivers(lat: number, lon: number, radiusInKm: number): Promise<Driver[]> {
+    const kmInMeters = radiusInKm * 1000;
+
+    return this.dbContext.createQueryBuilder('driver')
+      .where(`ST_DWithin(
+        driver.location,
+        geography(ST_MakePoint(:lon, :lat)),
+        :distance
+      ) AND driver.isActive = true`)
+      .setParameters({ lon, lat, kmInMeters })
+      .getMany();
   }
 }
+

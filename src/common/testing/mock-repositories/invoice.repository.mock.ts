@@ -1,12 +1,14 @@
 import { BaseRepository } from '../../../boundaries/persistance/repositories/base.repository';
 import { Invoice } from '../../../core/invoice/models/invoice.entity';
+import { IInvoiceRepository } from '../../../boundaries/persistance/repositories/invoice/invoice-repository.interface';
 
-export class MockInvoiceRepository extends BaseRepository<Invoice> {
+export class MockInvoiceRepository extends BaseRepository<Invoice> implements IInvoiceRepository {
   private inMemoryDb: Invoice[] = [];
 
   public create(entity: Partial<Invoice>): Promise<Invoice> {
     return new Promise((res) => {
       const invoice: Invoice = new Invoice();
+      invoice.invoiceId = this.inMemoryDb.length + 1;
       invoice.amount = entity.amount;
       invoice.issueDate = entity.issueDate;
       invoice.paymentStatus = entity.paymentStatus;
@@ -46,11 +48,11 @@ export class MockInvoiceRepository extends BaseRepository<Invoice> {
       } else {
         rej(null);
       }
-    })
+    });
   }
 
   public readAll(): Promise<Invoice[]> {
-    return new Promise( (res) => res(this.inMemoryDb));
+    return Promise.resolve(this.inMemoryDb);
   }
 
   public update(entity: Invoice): Promise<Invoice> {
@@ -64,6 +66,6 @@ export class MockInvoiceRepository extends BaseRepository<Invoice> {
       } else {
         rej(null);
       }
-    })
+    });
   }
 }

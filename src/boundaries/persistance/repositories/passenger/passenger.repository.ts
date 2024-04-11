@@ -4,34 +4,36 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Driver } from '../../../../core/driver/models/driver.entity';
 import { Repository } from 'typeorm';
 import { Passenger } from '../../../../core/passenger/models/passenger.entity';
+import { IPassengerRepository } from './passenger-repository.interface';
 
 @Injectable()
-export class PassengerRepository extends BaseRepository<Passenger> {
-  constructor(@InjectRepository(Driver) private passengerRepository: Repository<Passenger>) {
+export class PassengerRepository extends BaseRepository<Passenger> implements IPassengerRepository {
+  constructor(@InjectRepository(Driver) private readonly dbContext: Repository<Passenger>) {
     super();
   }
 
   public async create(entity: Partial<Passenger>): Promise<Passenger> {
-    return Promise.resolve(undefined);
+    return this.dbContext.create(entity);
   }
 
   public async delete(id: number): Promise<Passenger> {
-    return Promise.resolve(undefined);
+    const result = await this.dbContext.delete({ passengerId: id });
+    return result.raw;
   }
 
   public async exists(id: number): Promise<boolean> {
-    return Promise.resolve(false);
+    return await this.dbContext.count({ where: { passengerId: id } }) > 0;
   }
 
   public async read(id: number): Promise<Passenger> {
-    return Promise.resolve(undefined);
+    return await this.dbContext.findOne({ where: { passengerId: id } });
   }
 
   public async readAll(): Promise<Passenger[]> {
-    return Promise.resolve([]);
+    return await this.dbContext.find();
   }
 
   public async update(entity: Passenger): Promise<Passenger> {
-    return Promise.resolve(undefined);
+    return await this.dbContext.save(entity);
   }
 }
