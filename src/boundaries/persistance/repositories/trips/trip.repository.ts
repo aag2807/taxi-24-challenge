@@ -15,15 +15,15 @@ export class TripRepository extends BaseRepository<Trip> {
     return Promise.resolve(undefined);
   }
 
-  public async delete(id: string): Promise<Trip> {
+  public async delete(id: number): Promise<Trip> {
     return Promise.resolve(undefined);
   }
 
-  public async exists(id: string): Promise<boolean> {
+  public async exists(id: number): Promise<boolean> {
     return Promise.resolve(false);
   }
 
-  public async read(id: string): Promise<Trip> {
+  public async read(id: number): Promise<Trip> {
     return Promise.resolve(undefined);
   }
 

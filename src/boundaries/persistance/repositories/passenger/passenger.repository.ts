@@ -15,15 +15,15 @@ export class PassengerRepository extends BaseRepository<Passenger> {
     return Promise.resolve(undefined);
   }
 
-  public async delete(id: string): Promise<Passenger> {
+  public async delete(id: number): Promise<Passenger> {
     return Promise.resolve(undefined);
   }
 
-  public async exists(id: string): Promise<boolean> {
+  public async exists(id: number): Promise<boolean> {
     return Promise.resolve(false);
   }
 
-  public async read(id: string): Promise<Passenger> {
+  public async read(id: number): Promise<Passenger> {
     return Promise.resolve(undefined);
   }
 
