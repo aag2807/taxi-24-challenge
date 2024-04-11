@@ -6,7 +6,7 @@ import { DriverService } from '../../driver/services/driver.service';
 export class PassengerService {
   constructor(
     private readonly passengerRepository: PassengerRepository,
-    private readonly driverRepository: DriverService,
+    private readonly driverService: DriverService,
   ) {
   }
 

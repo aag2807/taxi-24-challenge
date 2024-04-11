@@ -1,13 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { TestingModule } from '@nestjs/testing';
 import { TripController } from './trip.controller';
+import { TestUtils } from '../../common/testing/test.utils';
 
 describe('TripController', () => {
   let controller: TripController;
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    const module: TestingModule = await TestUtils.configureTestingModule({
       controllers: [TripController],
-    }).compile();
+    });
 
     controller = module.get<TripController>(TripController);
   });

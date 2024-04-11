@@ -3,10 +3,9 @@ import { TripRepository } from '../../../boundaries/persistance/repositories/tri
 
 @Injectable()
 export class TripService {
-  constructor(private readonly tripRepository: TripRepository) {}
 
   public async getAllActiveTrips() {
-    return this.tripRepository.getAllActiveTrips();
+    // todo
   }
 
   public async completeTrip(tripId: number) {
