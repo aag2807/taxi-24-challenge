@@ -53,7 +53,7 @@ export class DriverRepository extends BaseRepository<Driver> implements IDriverR
         driver.location,
         geography(ST_MakePoint(:lon, :lat)),
         :kmInMeters
-      ) AND driver.isActive = true`)
+      ) AND driver.is_active = true`)
       .setParameters({ lon, lat, kmInMeters })
       .getMany();
   }
@@ -70,7 +70,7 @@ export class DriverRepository extends BaseRepository<Driver> implements IDriverR
         driver.location,
         geography(ST_MakePoint(:lon, :lat)),
         :threeKmRadiusToSearchFor
-      ) AND driver.isActive = true`)
+      ) AND driver.is_active = true`)
       .orderBy('distance', 'ASC')
       .setParameters({ lon, lat, threeKmRadiusToSearchFor })
       .limit(entriesToReturn)

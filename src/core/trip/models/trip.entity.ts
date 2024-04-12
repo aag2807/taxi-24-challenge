@@ -16,40 +16,40 @@ import { CreateTrip } from '../aggregates/create-trip.aggregate';
 
 @Entity('trips')
 export class Trip {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'trip_id'})
   public tripId: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'passenger_id'})
   public passengerId: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'driver_id'})
   public driverId: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'invoice_id'})
   public invoiceId: number;
 
   @ManyToOne(() => Passenger, passenger => passenger.trips)
-  @JoinColumn({ name: 'passengerId' })
+  @JoinColumn({ name: 'passenger_id' })
   public passenger: Passenger;
 
   @ManyToOne(() => Driver, driver => driver.trips)
-  @JoinColumn({ name: 'driverId' })
+  @JoinColumn({ name: 'driver_id' })
   public driver: Driver;
 
   @OneToOne(() => Invoice, invoice => invoice.trip)
-  @JoinColumn({ name: 'invoiceId' })
+  @JoinColumn({ name: 'invoice_id' })
   public invoice: Invoice;
 
-  @Column({ type: 'geography', spatialFeatureType: 'Point', srid: 4326, nullable: true })
+  @Column({ type: 'geography', spatialFeatureType: 'Point', srid: 4326, nullable: true, name: 'start_location' })
   public startLocation: LocationPoint;
 
-  @Column({ type: 'geography', spatialFeatureType: 'Point', srid: 4326, nullable: true })
+  @Column({ type: 'geography', spatialFeatureType: 'Point', srid: 4326, nullable: true, name: 'end_location' })
   public endLocation: LocationPoint;
 
-  @CreateDateColumn()
+  @CreateDateColumn({name: 'start_time'})
   public startTime: Date;
 
-  @UpdateDateColumn({ nullable: true })
+  @UpdateDateColumn({ nullable: true, name: 'end_time'})
   public endTime: Date;
 
   @Column({ length: 50, type: 'varchar' })

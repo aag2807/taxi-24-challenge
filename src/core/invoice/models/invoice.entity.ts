@@ -4,26 +4,26 @@ import { Nullable } from '../../../common/types/common.types';
 
 @Entity('invoices')
 export class Invoice {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'invoice_id'})
   public invoiceId: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   public amount: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({name: 'issue_date'})
   public issueDate: Date;
 
-  @CreateDateColumn()
+  @CreateDateColumn({name: 'due_date'})
   public paidDate: Nullable<Date>;
 
-  @Column({ length: 25, type: 'varchar', default: 'Pending'})
+  @Column({ length: 25, type: 'varchar', default: 'Pending', name: 'payment_status'})
   public paymentStatus: Nullable<'Paid'| 'Pending'| 'Canceled' >;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'trip_id'})
   public tripId: number;
 
   @OneToOne(() => Trip)
-  @JoinColumn({ name: 'tripId' })
+  @JoinColumn({ name: 'trip_id' })
   public trip: Trip;
 
   public pay() {
