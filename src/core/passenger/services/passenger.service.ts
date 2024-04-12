@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { PassengerRepository } from '../../../boundaries/persistance/repositories/passenger/passenger.repository';
 import { DriverService } from '../../driver/services/driver.service';
-import { Passenger } from '../models/passenger.entity';
 import { ArgumentGuard } from '../../../common/lib/argument/argument-guard';
 import { GetClosesDriversRequest } from '../models/aggregates/get-closest-drivers.aggregate';
 import { StateGuard } from '../../../common/lib/state/state-guard';
 import { Driver } from '../../driver/models/driver.entity';
+import { DriverResponse } from '../../driver/aggregates/driver-response.aggregate';
+import { PassengerResponse } from '../aggregates/passenger-response.aggregate';
 
 @Injectable()
 export class PassengerService {
@@ -15,20 +16,22 @@ export class PassengerService {
   ) {
   }
 
-  public async getAllPassengers(): Promise<Passenger[]> {
-    return await this.passengerRepository.readAll();
+  public async getAllPassengers(): Promise<PassengerResponse[]> {
+    const passengers = await this.passengerRepository.readAll();
+
+    return PassengerResponse.fromEntities(passengers);
   }
 
-  public async getPassengerById(id: number): Promise<Passenger> {
+  public async getPassengerById(id: number): Promise<PassengerResponse> {
     ArgumentGuard.greaterThan(id, 0, 'id must be greater than 0');
 
     const passenger = await this.passengerRepository.read(id);
     ArgumentGuard.notNull(passenger, 'Passenger not found', 404);
 
-    return passenger;
+    return PassengerResponse.fromEntity(passenger);
   }
 
-  public async get3ClosestDriversToPassengerLocation(passenger: GetClosesDriversRequest): Promise<Driver[]> {
+  public async get3ClosestDriversToPassengerLocation(passenger: GetClosesDriversRequest): Promise<DriverResponse[]> {
     const { longitude, latitude, passengerId } = passenger;
     ArgumentGuard.greaterThan(latitude, -90, 'latitude must be greater than -90');
     ArgumentGuard.lessThan(latitude, 90, 'latitude must be less than 90');
@@ -38,6 +41,7 @@ export class PassengerService {
     const isValidPassenger = await this.passengerRepository.exists(passengerId);
     StateGuard.isTrue(isValidPassenger, 'Passenger making request doesn\'t exist');
 
-    return await this.driverService.getClosestDriversToLocation(latitude, longitude, 3);
+    const closestDrivers: Driver[] = await this.driverService.getClosestDriversToLocation(latitude, longitude, 3);
+    return DriverResponse.fromEntities(closestDrivers);
   }
 }

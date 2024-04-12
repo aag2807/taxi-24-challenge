@@ -13,31 +13,33 @@ export class DriverService {
 
   public async getDrivers(): Promise<DriverResponse[]> {
     const allDrivers = await this.repo.readAll();
-    return allDrivers.map((driverEntity: Driver) => DriverResponse.fromEntity(driverEntity));
+    return DriverResponse.fromEntities(allDrivers);
   }
 
   public async getAllActiveDrivers(): Promise<DriverResponse[]> {
     const allActiveDrivers = await this.repo.getAllActiveDrivers();
-    return allActiveDrivers.map((driverEntity: Driver) => DriverResponse.fromEntity(driverEntity));
+    return DriverResponse.fromEntities(allActiveDrivers);
   }
 
-  public async getDriversInKmRadius(lat: number, lon: number, radiusInKm: number): Promise<Driver[]> {
+  public async getDriversInKmRadius(lat: number, lon: number, radiusInKm: number): Promise<DriverResponse[]> {
     ArgumentGuard.greaterThan(lat, -90, 'latitude must be greater than -90');
     ArgumentGuard.lessThan(lat, 90, 'latitude must be less than 90');
     ArgumentGuard.greaterThan(lon, -180, 'longitude must be greater than -180');
     ArgumentGuard.lessThan(lon, 180, 'longitude must be less than 180');
     ArgumentGuard.greaterThan(radiusInKm, 0, 'radius must be greater than 0');
 
-    return await this.repo.findNearbyDrivers(lat, lon, radiusInKm);
+    const nearbyDrivers = await this.repo.findNearbyDrivers(lat, lon, radiusInKm)
+
+    return DriverResponse.fromEntities(nearbyDrivers);
   }
 
-  public async getDriverById(id: number): Promise<Driver> {
+  public async getDriverById(id: number): Promise<DriverResponse> {
     ArgumentGuard.greaterThan(id, 0);
 
     const driver = await this.repo.read(id);
     ArgumentGuard.notNull(driver, 'driver not found', 404);
 
-    return driver;
+    return DriverResponse.fromEntity(driver);
   }
 
   public async createDriver(createDriverAggregate: CreateDriver): Promise<Driver> {
