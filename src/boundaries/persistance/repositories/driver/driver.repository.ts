@@ -59,6 +59,8 @@ export class DriverRepository extends BaseRepository<Driver> implements IDriverR
   }
 
   public async findClosestDrivers(lat: number, lon: number, entriesToReturn: number): Promise<Driver[]> {
+    const threeKmRadiusToSearchFor = 3 * 1000;
+
     return this.dbContext.createQueryBuilder('driver')
       .addSelect(`ST_Distance(
         driver.location,
@@ -67,10 +69,10 @@ export class DriverRepository extends BaseRepository<Driver> implements IDriverR
       .where(`ST_DWithin(
         driver.location,
         geography(ST_MakePoint(:lon, :lat)),
-        :radiusInMeters
+        :threeKmRadiusToSearchFor
       ) AND driver.isActive = true`)
       .orderBy('distance', 'ASC')
-      .setParameters({ lon, lat })
+      .setParameters({ lon, lat, threeKmRadiusToSearchFor })
       .limit(entriesToReturn)
       .getMany();
   }

@@ -27,7 +27,7 @@ export class InvoiceRepository extends BaseRepository<Invoice> implements IInvoi
 
   public async read(id: number): Promise<Nullable<Invoice>> {
     try{
-      return await this.dbContext.findOne({ where: { invoiceId: id },relations: ['trip'] });
+      return await this.dbContext.findOne({ where: { invoiceId: id },relations: ['trip', 'trip.passenger', 'trip.driver'] });
     }catch (e) {
       return null;
     }
@@ -38,6 +38,7 @@ export class InvoiceRepository extends BaseRepository<Invoice> implements IInvoi
   }
 
   public async update(entity: Invoice): Promise<Invoice> {
-    return await this.dbContext.save(entity);
+    await this.dbContext.save(entity);
+    return await this.read(entity.invoiceId);
   }
 }
