@@ -5,6 +5,8 @@ import { DriverService } from '../../core/driver/services/driver.service';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { DriverRepository } from '../../boundaries/persistance/repositories/driver/driver.repository';
+import { Coordinate } from '../../common/models/coordinates.model';
+import { LocationPoint } from '../../common/models/location-point.model';
 
 describe('DriverController', () => {
   let app: INestApplication;
@@ -41,7 +43,7 @@ describe('DriverController', () => {
         licenseNumber: 'D12345',
         phoneNumber: '5551234567',
         isActive: true,
-        location: '34.0522,-118.2437', // Los Angeles
+        location: new LocationPoint(34.0522, -118.2437), // Los Angeles
         trips: [],
       },
       {
@@ -51,7 +53,7 @@ describe('DriverController', () => {
         licenseNumber: 'D67890',
         phoneNumber: '5557654321',
         isActive: false,
-        location: '1.00,15.00', // africa
+        location: new LocationPoint(1.00, 15.00), // africa
         trips: [],
       },
     ];
@@ -75,7 +77,7 @@ describe('DriverController', () => {
         licenseNumber: 'D12345',
         phoneNumber: '5551234567',
         isActive: true,
-        location: '34.0522,-118.2437', // Los Angeles
+        location: new LocationPoint(34.0522, -118.2437), // Los Angeles
         trips: [],
       },
       {
@@ -85,7 +87,7 @@ describe('DriverController', () => {
         licenseNumber: 'D67890',
         phoneNumber: '5557654321',
         isActive: false,
-        location: '1.00,15.00', // africa
+        location: new LocationPoint(1.00, 15.00), // africa
         trips: [],
       },
     ];
@@ -108,7 +110,7 @@ describe('DriverController', () => {
       licenseNumber: 'D67890',
       phoneNumber: '5557654321',
       isActive: false,
-      location: '1.00,15.00', // africa
+      location: new LocationPoint(1.00, 15.00), // africa
       trips: [],
     };
     await driverRepository.create(mockDriver);
@@ -132,7 +134,7 @@ describe('DriverController', () => {
         licenseNumber: 'D12345',
         phoneNumber: '5551234567',
         isActive: true,
-        location: '34.0522,-118.2437', // Los Angeles
+        location: new LocationPoint(34.0522, -118.2437), // Los Angeles
         trips: [],
       },
       {
@@ -142,7 +144,7 @@ describe('DriverController', () => {
         licenseNumber: 'D67890',
         phoneNumber: '5557654321',
         isActive: false,
-        location: '1.00,15.00', // africa
+        location: new LocationPoint(1.00, 15.00), // africa
         trips: [],
       },
     ];
@@ -168,7 +170,7 @@ describe('DriverController', () => {
         licenseNumber: 'D12345',
         phoneNumber: '5551234567',
         isActive: true,
-        location: '34.0522,-118.2437', // Los Angeles
+        location: new LocationPoint(34.0522, -118.2437), // Los Angeles
         trips: [],
       },
       {
@@ -178,7 +180,7 @@ describe('DriverController', () => {
         licenseNumber: 'D67890',
         phoneNumber: '5557654321',
         isActive: false,
-        location: '1.00,15.00', // africa
+        location: new LocationPoint(1.00, 15.00), // africa
         trips: [],
       },
     ];
@@ -201,7 +203,7 @@ describe('DriverController', () => {
       .then(response => {
         const body = response.body;
         expect(body).toBeDefined();
-        expect(body.message).toBe('id must be greater than 0');
+        expect(body.message).toBe('value is less than or equal to min');
       });
   });
 
@@ -214,7 +216,7 @@ describe('DriverController', () => {
         licenseNumber: 'D12345',
         phoneNumber: '5551234567',
         isActive: true,
-        location: '34.0522,-118.2437', // Los Angeles
+        location: new LocationPoint(34.0522, -118.2437), // Los Angeles
         trips: [],
       },
       {
@@ -224,7 +226,7 @@ describe('DriverController', () => {
         licenseNumber: 'D67890',
         phoneNumber: '5557654321',
         isActive: false,
-        location: '1.00,15.00', // africa
+        location: new LocationPoint(1.00, 15.00), // africa
         trips: [],
       },
     ];

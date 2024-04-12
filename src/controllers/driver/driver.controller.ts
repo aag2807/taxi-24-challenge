@@ -4,6 +4,7 @@ import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Driver } from '../../core/driver/models/driver.entity';
 import { ArgumentGuard } from '../../common/lib/argument/argument-guard';
 import { StateGuard } from '../../common/lib/state/state-guard';
+import { DriverResponse } from '../../core/driver/aggregates/driver-response.aggregate';
 
 @ApiTags('Driver')
 @Controller('driver')
@@ -14,14 +15,14 @@ export class DriverController {
   @ApiOperation({ summary: 'Get\'s all drivers' })
   @ApiOkResponse({ description: 'All drivers', type: Driver })
   @Get('/all')
-  public async getDrivers(): Promise<Driver[]> {
+  public async getDrivers(): Promise<DriverResponse[]> {
     return await this.driverService.getDrivers();
   }
 
   @Get('/all/active')
   @ApiOperation({ summary: 'Get\'s all active drivers' })
   @ApiOkResponse({ description: 'All active drivers', type: Driver })
-  public async getAllActiveDrivers(): Promise<Driver[]> {
+  public async getAllActiveDrivers(): Promise<DriverResponse[]> {
     return this.driverService.getAllActiveDrivers();
   }
 

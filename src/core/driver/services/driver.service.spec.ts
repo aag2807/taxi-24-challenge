@@ -2,7 +2,8 @@ import { TestingModule } from '@nestjs/testing';
 import { DriverService } from './driver.service';
 import { TestUtils } from '../../../common/testing/test.utils';
 import { DriverRepository } from '../../../boundaries/persistance/repositories/driver/driver.repository';
-import { CreateDriver } from '../aggregates/createDriver.aggregate';
+import { CreateDriver } from '../aggregates/create-driver.aggregate';
+import { LocationPoint } from '../../../common/models/location-point.model';
 
 describe('DriverService', () => {
   let service: DriverService;
@@ -61,6 +62,7 @@ describe('DriverService', () => {
       isActive: true,
       licenseNumber: 'license-number-1',
       phoneNumber: '1234567890',
+      location: new LocationPoint(0, 0),
     });
 
     const drivers = await service.getDrivers();
@@ -95,7 +97,7 @@ describe('DriverService', () => {
         licenseNumber: 'D12345',
         phoneNumber: '5551234567',
         isActive: true,
-        location: '34.0522,-118.2437', // Los Angeles
+        location: new LocationPoint(34.0522, -118.2437), // Los Angeles
         trips: [],
       },
       {
@@ -105,7 +107,7 @@ describe('DriverService', () => {
         licenseNumber: 'D67890',
         phoneNumber: '5557654321',
         isActive: false,
-        location: '1.00,15.00', // africa
+        location: new LocationPoint(1.00, 15.00), // africa
         trips: [],
       }
     ];
@@ -125,6 +127,7 @@ describe('DriverService', () => {
       isActive: true,
       licenseNumber: 'license-number-1',
       phoneNumber: '1234567890',
+      location: new LocationPoint(0, 0),
     });
     await driverRepository.create({
       email: 'unique-email-2@gmail.com',
@@ -132,6 +135,7 @@ describe('DriverService', () => {
       isActive: false,
       licenseNumber: 'license-number-2',
       phoneNumber: '0987654321',
+      location: new LocationPoint(0, 0),
     });
   };
 });

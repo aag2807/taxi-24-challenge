@@ -3,6 +3,9 @@ import { PassengerRepository } from '../../../boundaries/persistance/repositorie
 import { DriverService } from '../../driver/services/driver.service';
 import { Passenger } from '../models/passenger.entity';
 import { ArgumentGuard } from '../../../common/lib/argument/argument-guard';
+import { GetClosesDriversRequest } from '../models/aggregates/get-closest-drivers.aggregate';
+import { StateGuard } from '../../../common/lib/state/state-guard';
+import { Driver } from '../../driver/models/driver.entity';
 
 @Injectable()
 export class PassengerService {
@@ -16,7 +19,7 @@ export class PassengerService {
     return await this.passengerRepository.readAll();
   }
 
-  public async getPassengerById(id: number) {
+  public async getPassengerById(id: number): Promise<Passenger> {
     ArgumentGuard.greaterThan(id, 0, 'id must be greater than 0');
 
     const passenger = await this.passengerRepository.read(id);
@@ -25,7 +28,16 @@ export class PassengerService {
     return passenger;
   }
 
-  public async getClosestDriversToPartingPoint() {
-    //
+  public async get3ClosestDriversToPassengerLocation(passenger: GetClosesDriversRequest): Promise<Driver[]> {
+    const { longitude, latitude, passengerId } = passenger;
+    ArgumentGuard.greaterThan(latitude, -90, 'latitude must be greater than -90');
+    ArgumentGuard.lessThan(latitude, 90, 'latitude must be less than 90');
+    ArgumentGuard.greaterThan(longitude, -180, 'longitude must be greater than -180');
+    ArgumentGuard.lessThan(longitude, 180, 'longitude must be less than 180');
+
+    const isValidPassenger = await this.passengerRepository.exists(passengerId);
+    StateGuard.isTrue(isValidPassenger, 'Passenger making request doesn\'t exist');
+
+    return await this.driverService.getClosestDriversToLocation(latitude, longitude, 3);
   }
 }

@@ -28,8 +28,8 @@ export class DriverRepository extends BaseRepository<Driver> implements IDriverR
   public async read(id: number): Promise<Nullable<Driver>> {
     try {
       return await this.dbContext.findOne({ where: { driverId: id } });
-    }catch (e) {
-      return null ;
+    } catch (e) {
+      return null;
     }
   }
 
@@ -52,9 +52,26 @@ export class DriverRepository extends BaseRepository<Driver> implements IDriverR
       .where(`ST_DWithin(
         driver.location,
         geography(ST_MakePoint(:lon, :lat)),
-        :distance
+        :kmInMeters
       ) AND driver.isActive = true`)
       .setParameters({ lon, lat, kmInMeters })
+      .getMany();
+  }
+
+  public async findClosestDrivers(lat: number, lon: number, entriesToReturn: number): Promise<Driver[]> {
+    return this.dbContext.createQueryBuilder('driver')
+      .addSelect(`ST_Distance(
+        driver.location,
+        geography(ST_MakePoint(:lon, :lat))
+      )`, 'distance')
+      .where(`ST_DWithin(
+        driver.location,
+        geography(ST_MakePoint(:lon, :lat)),
+        :radiusInMeters
+      ) AND driver.isActive = true`)
+      .orderBy('distance', 'ASC')
+      .setParameters({ lon, lat })
+      .limit(entriesToReturn)
       .getMany();
   }
 }

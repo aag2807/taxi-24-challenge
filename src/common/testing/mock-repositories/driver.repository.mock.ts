@@ -85,17 +85,34 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
   }
 
   public findNearbyDrivers(queryLat: number, queryLon: number, radius: number): Promise<Driver[]> {
-    const radiusInDegrees = radius / 111000; // Very rough conversion of meters to degrees for mocking purposes
+    const radiusInDegrees = radius / 111000; // Approximate conversion from meters to degrees at the equator
     return new Promise((res) => {
       const nearbyDrivers = this.inMemoryDb.filter(driver => {
-        const [driverLat, driverLon] = driver.location.split(',').map(Number);
+        const [driverLon, driverLat] = driver.location.coordinates;
         const distance = Math.sqrt(
-          Math.pow(driverLat - queryLat, 2) +
-          Math.pow(driverLon - queryLon, 2)
+          Math.pow(driverLat - queryLat, 2) + Math.pow(driverLon - queryLon, 2) * Math.cos(Math.PI / 180 * queryLat)
         );
         return distance < radiusInDegrees && driver.isActive;
       });
       res(nearbyDrivers);
+    });
+  }
+
+
+  findClosestDrivers(queryLat: number, queryLon: number, entriesToReturn: number): Promise<Driver[]> {
+    return new Promise((res) => {
+      const driversWithDistances = this.inMemoryDb.filter(driver => driver.isActive).map(driver => {
+        const [ driverLon, driverLat] = driver.location.coordinates;
+        const distance = Math.sqrt(
+          Math.pow(driverLat - queryLat, 2) +
+          Math.pow(driverLon - queryLon, 2),
+        );
+        return { driver, distance };
+      });
+
+      // Sort drivers by distance and return the top three
+      const closestDrivers = driversWithDistances.sort((a, b) => a.distance - b.distance).slice(0, entriesToReturn).map(item => item.driver);
+      res(closestDrivers);
     });
   }
 }

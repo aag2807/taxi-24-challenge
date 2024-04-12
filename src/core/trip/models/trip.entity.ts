@@ -11,7 +11,7 @@ import { Driver } from '../../driver/models/driver.entity';
 import { Passenger } from '../../passenger/models/passenger.entity';
 import { Invoice } from '../../invoice/models/invoice.entity';
 import { Nullable } from '../../../common/types/common.types';
-import { TripStatus } from '../types/trip-status.type';
+import { LocationPoint } from '../../../common/models/location-point.model';
 
 @Entity('trips')
 export class Trip {
@@ -27,10 +27,10 @@ export class Trip {
   public driver: Driver;
 
   @Column({ type: 'geography', spatialFeatureType: 'Point', srid: 4326, nullable: true })
-  public startLocation: string;
+  public startLocation: LocationPoint;
 
   @Column({ type: 'geography', spatialFeatureType: 'Point', srid: 4326, nullable: true })
-  public endLocation: string;
+  public endLocation: LocationPoint;
 
   @CreateDateColumn()
   public startTime: Date;
