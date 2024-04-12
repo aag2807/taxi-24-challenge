@@ -51,7 +51,7 @@ export class MockTripRepository extends BaseRepository<Trip> implements ITripRep
       if (trip) {
         res(trip);
       } else {
-        rej(null);
+        res(null);
       }
     });
   }

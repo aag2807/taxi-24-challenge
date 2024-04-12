@@ -6,6 +6,7 @@ import { InvoiceService } from '../../invoice/services/invoice.service';
 import { CreateTrip } from '../aggregates/create-trip.aggregate';
 import { ArgumentGuard } from '../../../common/lib/argument/argument-guard';
 import { Invoice } from '../../invoice/models/invoice.entity';
+import { InvoiceResponse } from '../../invoice/models/aggregates/invoice-response.aggregate';
 
 @Injectable()
 export class TripService {
@@ -26,12 +27,14 @@ export class TripService {
     return TripResponse.fromEntities(activeTrips);
   }
 
-  public async completeTrip(tripId: number) {
+  public async completeTrip(tripId: number): Promise<InvoiceResponse> {
     ArgumentGuard.greaterThan(tripId, 0, 'TripId must be greater than 0');
     const trip: Trip = await this.tripRepository.read(tripId);
+    ArgumentGuard.notNull(trip, 'Trip has to exist in order to complete it')
     trip.complete();
     await this.tripRepository.update(trip);
-    await this.invoiceService.payInvoice(trip.invoiceId);
+
+    return await this.invoiceService.payInvoice(trip.invoiceId);
   }
 
   public async createTrip(createTripAggregate: CreateTrip) {

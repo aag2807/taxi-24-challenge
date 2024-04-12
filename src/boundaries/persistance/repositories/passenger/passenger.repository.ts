@@ -13,7 +13,7 @@ export class PassengerRepository extends BaseRepository<Passenger> implements IP
   }
 
   public async create(entity: Partial<Passenger>): Promise<Passenger> {
-    return this.dbContext.create(entity);
+    return this.dbContext.save(entity);
   }
 
   public async delete(id: number): Promise<Passenger> {

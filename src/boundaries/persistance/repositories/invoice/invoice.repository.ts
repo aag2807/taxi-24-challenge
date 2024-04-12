@@ -2,11 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { BaseRepository } from '../base.repository';
 import { Invoice } from '../../../../core/invoice/models/invoice.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Driver } from '../../../../core/driver/models/driver.entity';
 import { Repository } from 'typeorm';
 import { IInvoiceRepository } from './invoice-repository.interface';
 import { Nullable } from '../../../../common/types/common.types';
-import e from 'express';
 
 @Injectable()
 export class InvoiceRepository extends BaseRepository<Invoice> implements IInvoiceRepository {
@@ -15,9 +13,7 @@ export class InvoiceRepository extends BaseRepository<Invoice> implements IInvoi
   }
 
   public async create(entity: Partial<Invoice>): Promise<Invoice> {
-    const savedEntity = await this.dbContext.save(entity);
-    console.log(savedEntity);
-    return savedEntity;
+    return await this.dbContext.save(entity);
   }
 
   public async delete(id: number): Promise<Invoice> {
@@ -31,7 +27,7 @@ export class InvoiceRepository extends BaseRepository<Invoice> implements IInvoi
 
   public async read(id: number): Promise<Nullable<Invoice>> {
     try{
-      return await this.dbContext.findOne({ where: { invoiceId: id } });
+      return await this.dbContext.findOne({ where: { invoiceId: id },relations: ['trip'] });
     }catch (e) {
       return null;
     }

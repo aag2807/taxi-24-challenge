@@ -1,9 +1,10 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { TripService } from '../../core/trip/services/trip.service';
 import { TripResponse } from '../../core/trip/aggregates/trip-response.aggregate';
 import { CreateTrip } from '../../core/trip/aggregates/create-trip.aggregate';
 import { ArgumentGuard } from '../../common/lib/argument/argument-guard';
+import { StateGuard } from '../../common/lib/state/state-guard';
 
 @ApiTags('Trip')
 @Controller('trip')
@@ -29,10 +30,19 @@ export class TripController {
   @ApiOkResponse({ description: 'Create a trip' })
   @HttpCode(202)
   @Post('/create')
-  public async createTrip(@Body() createTripDto: CreateTrip): Promise<any>
-  {
+  public async createTrip(@Body() createTripDto: CreateTrip): Promise<any> {
     ArgumentGuard.notNull(createTripDto, 'createTripDto cannot be null to create a trip');
 
     return await this.tripService.createTrip(createTripDto);
+  }
+
+  @ApiOperation({ summary: 'Complete a trip' })
+  @ApiOkResponse({ description: 'Complete a trip' })
+  @HttpCode(202)
+  @Post('/complete/:id')
+  public async completeTrip(@Param('id') tripId: number) {
+    StateGuard.isTrue(!!tripId, 'tripId cannot be null or undefined to complete a trip');
+
+    return await this.tripService.completeTrip(+tripId);
   }
 }

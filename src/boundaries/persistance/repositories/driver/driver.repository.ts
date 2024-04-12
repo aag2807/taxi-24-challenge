@@ -13,7 +13,7 @@ export class DriverRepository extends BaseRepository<Driver> implements IDriverR
   }
 
   public async create(entity: Partial<Driver>): Promise<Driver> {
-    return this.dbContext.create(entity);
+    return this.dbContext.save(entity);
   }
 
   public async delete(id: number): Promise<Driver> {

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { PassengerService } from '../../core/passenger/services/passenger.service';
 import { ArgumentGuard } from '../../common/lib/argument/argument-guard';
@@ -31,6 +31,7 @@ export class PassengerController {
   @Post('/get-nearby-drivers')
   @ApiOperation({ summary: 'Gets the 3 closest drivers to the passengers location' })
   @ApiOkResponse({ description: 'Closest 3 drivers in proximity', type: () => DriverResponse })
+  @HttpCode(200)
   public async getClosestDrivers(@Body() request: GetClosesDriversRequest): Promise<DriverResponse[]>{
     ArgumentGuard.notNull(request, 'request cannot be null to get closest drivers');
 
