@@ -1,7 +1,6 @@
 import { Controller, Get, Param, Query } from '@nestjs/common';
 import { DriverService } from '../../core/driver/services/driver.service';
 import { ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { ArgumentGuard } from '../../common/lib/argument/argument-guard';
 import { StateGuard } from '../../common/lib/state/state-guard';
 import { DriverResponse } from '../../core/driver/aggregates/driver-response.aggregate';
 

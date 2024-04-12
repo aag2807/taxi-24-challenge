@@ -46,6 +46,6 @@ export class TripService {
     trip.invoiceId = invoice.invoiceId;
     await this.tripRepository.update(trip);
 
-    return trip;
+    return TripResponse.fromEntity(trip);
   }
 }

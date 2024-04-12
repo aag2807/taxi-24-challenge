@@ -1,8 +1,5 @@
 import { BaseRepository } from '../../../boundaries/persistance/repositories/base.repository';
-import { Invoice } from '../../../core/invoice/models/invoice.entity';
-import {
-  IPassengerRepository,
-} from '../../../boundaries/persistance/repositories/passenger/passenger-repository.interface';
+import { IPassengerRepository } from '../../../boundaries/persistance/repositories/passenger/passenger-repository.interface';
 import { Passenger } from '../../../core/passenger/models/passenger.entity';
 
 export class MockPassengerRepository extends BaseRepository<Passenger> implements IPassengerRepository {
@@ -27,7 +24,7 @@ export class MockPassengerRepository extends BaseRepository<Passenger> implement
         this.inMemoryDb = this.inMemoryDb.filter((p) => p.passengerId !== id);
       }
       res(passenger);
-    })
+    });
   }
 
   public async exists(id: number): Promise<boolean> {
@@ -39,7 +36,7 @@ export class MockPassengerRepository extends BaseRepository<Passenger> implement
   public async read(id: number): Promise<Passenger> {
     return new Promise((res) => {
       const passenger = this.inMemoryDb.find((p) => p.passengerId === id);
-      if(!!passenger) {
+      if (!!passenger) {
         res(passenger);
         return;
       }

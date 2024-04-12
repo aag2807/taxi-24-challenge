@@ -69,6 +69,7 @@ export class MockTripRepository extends BaseRepository<Trip> implements ITripRep
         trip.startTime = entity.startTime;
         trip.endTime = entity.endTime;
         trip.status = entity.status;
+        trip.invoiceId = entity?.invoiceId || 0;
 
         res(trip);
       } else {
@@ -77,7 +78,7 @@ export class MockTripRepository extends BaseRepository<Trip> implements ITripRep
     });
   }
 
-  getAllActiveTrips(): Promise<Trip[]> {
+  public getAllActiveTrips(): Promise<Trip[]> {
     return new Promise((res) => {
       res(this.inMemoryDb.filter(d => d.status === 'Active'));
     })

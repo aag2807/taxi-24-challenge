@@ -72,7 +72,7 @@ describe('TripController', () => {
       });
   });
 
-  it('should create a trip and it should return status code 202, invoice should be created', async () => {
+  it('should create a trip and it should return status code 201, invoice should be created', async () => {
     const driver: Driver = await driverRepository.create({
       fullName: 'Jane Smith',
       email: 'jane@example.com',
@@ -97,11 +97,11 @@ describe('TripController', () => {
     return request(app.getHttpServer())
       .post('/trip/create')
       .send(createTripAggregate)
-      .expect(202)
+      .expect(201)
       .then(async (response) => {
         const body = response.body;
         expect(body.tripId).toBe(1);
-        const invoice = await invoiceRepository.exists(body.invoiceId);
+        const invoice = await invoiceRepository.exists(1);
         expect(invoice).toBeTruthy();
       });
   });
@@ -131,8 +131,8 @@ describe('TripController', () => {
     await service.createTrip(createTripAggregate);
 
     return request(app.getHttpServer())
-      .post('/trip/complete/1')
-      .expect(202)
+      .patch('/trip/complete/1')
+      .expect(200)
       .then(async (response) => {
         const body = response.body;
         const trip = await tripRepository.read(1);
@@ -146,7 +146,7 @@ describe('TripController', () => {
 
   it('should fail and throw exception when invalid trip id is provided', async () => {
     return request(app.getHttpServer())
-      .post('/trip/complete/1')
+      .patch('/trip/complete/1')
       .expect(400)
       .then(async (response) => {
         const body = response.body;

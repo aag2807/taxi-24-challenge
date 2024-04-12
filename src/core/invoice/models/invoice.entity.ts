@@ -13,6 +13,9 @@ export class Invoice {
   @CreateDateColumn()
   public issueDate: Date;
 
+  @CreateDateColumn()
+  public paidDate: Nullable<Date>;
+
   @Column({ length: 25, type: 'varchar', default: 'Pending'})
   public paymentStatus: Nullable<'Paid'| 'Pending'| 'Canceled' >;
 
@@ -25,5 +28,6 @@ export class Invoice {
 
   public pay() {
     this.paymentStatus = 'Paid';
+    this.paidDate = new Date();
   }
 }

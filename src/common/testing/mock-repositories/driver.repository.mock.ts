@@ -2,7 +2,6 @@ import { BaseRepository } from '../../../boundaries/persistance/repositories/bas
 import { Driver } from '../../../core/driver/models/driver.entity';
 import { IDriverRepository } from '../../../boundaries/persistance/repositories/driver/driver-repository.interface';
 
-
 export class MockDriverRepository extends BaseRepository<Driver> implements IDriverRepository {
   private inMemoryDb: Driver[] = [];
 
@@ -90,7 +89,7 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
       const nearbyDrivers = this.inMemoryDb.filter(driver => {
         const [driverLon, driverLat] = driver.location.coordinates;
         const distance = Math.sqrt(
-          Math.pow(driverLat - queryLat, 2) + Math.pow(driverLon - queryLon, 2) * Math.cos(Math.PI / 180 * queryLat)
+          Math.pow(driverLat - queryLat, 2) + Math.pow(driverLon - queryLon, 2) * Math.cos(Math.PI / 180 * queryLat),
         );
         return distance < radiusInDegrees && driver.isActive;
       });
@@ -101,7 +100,7 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
   public findClosestDrivers(queryLat: number, queryLon: number, entriesToReturn: number): Promise<Driver[]> {
     return new Promise((res) => {
       const driversWithDistances = this.inMemoryDb.filter(driver => driver.isActive).map(driver => {
-        const [ driverLon, driverLat] = driver.location.coordinates;
+        const [driverLon, driverLat] = driver.location.coordinates;
         const distance = Math.sqrt(
           Math.pow(driverLat - queryLat, 2) +
           Math.pow(driverLon - queryLon, 2),

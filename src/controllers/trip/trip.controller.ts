@@ -5,6 +5,7 @@ import { TripResponse } from '../../core/trip/aggregates/trip-response.aggregate
 import { CreateTrip } from '../../core/trip/aggregates/create-trip.aggregate';
 import { ArgumentGuard } from '../../common/lib/argument/argument-guard';
 import { StateGuard } from '../../common/lib/state/state-guard';
+import { InvoiceResponse } from '../../core/invoice/models/aggregates/invoice-response.aggregate';
 
 @ApiTags('Trip')
 @Controller('trip')
@@ -27,18 +28,18 @@ export class TripController {
   }
 
   @ApiOperation({ summary: 'Create a trip' })
-  @ApiOkResponse({ description: 'Create a trip' })
+  @ApiOkResponse({ description: 'Create a trip', type: () => TripResponse })
   @Post('/create')
-  public async createTrip(@Body() createTripDto: CreateTrip): Promise<any> {
+  public async createTrip(@Body() createTripDto: CreateTrip): Promise<TripResponse> {
     ArgumentGuard.notNull(createTripDto, 'createTripDto cannot be null to create a trip');
 
     return await this.tripService.createTrip(createTripDto);
   }
 
   @ApiOperation({ summary: 'Complete a trip' })
-  @ApiOkResponse({ description: 'Trip completed successfully' })
+  @ApiOkResponse({ description: 'Trip completed successfully', type: () => InvoiceResponse })
   @Patch('/complete/:id')
-  public async completeTrip(@Param('id') tripId: number) {
+  public async completeTrip(@Param('id') tripId: number): Promise<InvoiceResponse> {
     StateGuard.isTrue(!!tripId, 'tripId cannot be null or undefined to complete a trip');
 
     return await this.tripService.completeTrip(+tripId);

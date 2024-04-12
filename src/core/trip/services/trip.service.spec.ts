@@ -12,6 +12,7 @@ import { DriverRepository } from '../../../boundaries/persistance/repositories/d
 import { PassengerRepository } from '../../../boundaries/persistance/repositories/passenger/passenger.repository';
 import { CreateTrip } from '../aggregates/create-trip.aggregate';
 import { Coordinate } from '../../../common/models/coordinates.model';
+import { TripResponse } from '../aggregates/trip-response.aggregate';
 
 describe('TripService', () => {
   let service: TripService;
@@ -86,11 +87,12 @@ describe('TripService', () => {
     createTripAggregate.endLocation = new Coordinate(1.00, 15.00);
     createTripAggregate.startTime = new Date();
 
-    const trip: Trip = await service.createTrip(createTripAggregate);
-    const invoice = await invoiceRepository.read(trip.invoiceId);
+    const trip: TripResponse = await service.createTrip(createTripAggregate);
+    const invoice = await invoiceRepository.read(1);
 
     expect(trip).toBeDefined();
     expect(invoice).toBeDefined();
+    expect(invoice.paymentStatus).toEqual('Pending')
   });
 
   it('should complete a trip', async () => {
@@ -114,11 +116,11 @@ describe('TripService', () => {
     createTripAggregate.startLocation = new Coordinate(1.00, 15.00);
     createTripAggregate.endLocation = new Coordinate(1.00, 15.00);
     createTripAggregate.startTime = new Date();
-    const trip: Trip = await service.createTrip(createTripAggregate);
+    const trip: TripResponse = await service.createTrip(createTripAggregate);
 
     await service.completeTrip(trip.tripId);
     const completedTrip = await tripRepository.read(trip.tripId);
-    const paidInvoice = await invoiceRepository.read(trip.invoiceId);
+    const paidInvoice = await invoiceRepository.read(1);
 
     expect(completedTrip.status).toEqual('Completed');
     expect(paidInvoice.paymentStatus).toEqual('Paid')

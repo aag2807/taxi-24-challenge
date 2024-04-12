@@ -12,6 +12,9 @@ export class InvoiceResponse {
   @ApiProperty({ example: new Date(), description: 'Date when the invoice was issued.' })
   public issueDate: Date;
 
+  @ApiProperty({ example: new Date(), description: 'Date when the invoice was paid.' })
+  public paidDate: Nullable<Date>;
+
   @ApiProperty({ example: 'Pending', description: 'Status of the payment.' })
   public paymentStatus: Nullable<'Paid' | 'Pending' | 'Canceled'>;
 
@@ -37,6 +40,7 @@ export class InvoiceResponse {
     response.issueDate = entity.issueDate;
     response.paymentStatus = entity.paymentStatus;
     response.tripId = entity.tripId;
+    response.paidDate = entity.paidDate;
 
     if (entity.trip) {
       response.passengerId = entity.trip.passengerId;
