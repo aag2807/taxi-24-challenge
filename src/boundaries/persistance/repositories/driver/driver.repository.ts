@@ -74,5 +74,9 @@ export class DriverRepository extends BaseRepository<Driver> implements IDriverR
       .limit(entriesToReturn)
       .getMany();
   }
+
+  public async isDriverActive(driverId: number): Promise<boolean> {
+    return await this.dbContext.count({ where: { driverId, isActive: true } }) > 0;
+  }
 }
 

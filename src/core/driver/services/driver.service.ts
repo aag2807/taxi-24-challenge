@@ -61,4 +61,10 @@ export class DriverService {
 
     return await this.repo.findClosestDrivers(latitude, longitude, amountOfDriversToSearch);
   }
+
+  public async isDriverActive(driverId: number): Promise<boolean> {
+    ArgumentGuard.greaterThan(driverId, 0, 'driverId must be greater than 0');
+
+    return await this.repo.isDriverActive(driverId);
+  }
 }

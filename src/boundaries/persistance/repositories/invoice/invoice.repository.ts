@@ -5,15 +5,19 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Driver } from '../../../../core/driver/models/driver.entity';
 import { Repository } from 'typeorm';
 import { IInvoiceRepository } from './invoice-repository.interface';
+import { Nullable } from '../../../../common/types/common.types';
+import e from 'express';
 
 @Injectable()
 export class InvoiceRepository extends BaseRepository<Invoice> implements IInvoiceRepository {
-  constructor(@InjectRepository(Driver) private readonly dbContext: Repository<Invoice>) {
+  constructor(@InjectRepository(Invoice) private readonly dbContext: Repository<Invoice>) {
     super();
   }
 
   public async create(entity: Partial<Invoice>): Promise<Invoice> {
-    return this.dbContext.create(entity);
+    const savedEntity = await this.dbContext.save(entity);
+    console.log(savedEntity);
+    return savedEntity;
   }
 
   public async delete(id: number): Promise<Invoice> {
@@ -25,8 +29,12 @@ export class InvoiceRepository extends BaseRepository<Invoice> implements IInvoi
     return await this.dbContext.count({ where: { invoiceId: id } }) > 0;
   }
 
-  public async read(id: number): Promise<Invoice> {
-    return await this.dbContext.findOne({ where: { invoiceId: id } });
+  public async read(id: number): Promise<Nullable<Invoice>> {
+    try{
+      return await this.dbContext.findOne({ where: { invoiceId: id } });
+    }catch (e) {
+      return null;
+    }
   }
 
   public async readAll(): Promise<Invoice[]> {

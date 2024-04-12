@@ -5,7 +5,6 @@ import { DriverService } from '../../core/driver/services/driver.service';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { DriverRepository } from '../../boundaries/persistance/repositories/driver/driver.repository';
-import { Coordinate } from '../../common/models/coordinates.model';
 import { LocationPoint } from '../../common/models/location-point.model';
 
 describe('DriverController', () => {

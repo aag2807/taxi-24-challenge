@@ -7,4 +7,6 @@ export interface IDriverRepository extends IBaseRepository<Driver> {
   getAllActiveDrivers(): Promise<Driver[]>;
 
   findClosestDrivers(queryLat: number, queryLon: number, entriesToReturn: number): Promise<Driver[]>;
+
+  isDriverActive(driverId: number): Promise<boolean>;
 }

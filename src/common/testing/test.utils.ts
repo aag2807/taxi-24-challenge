@@ -1,6 +1,6 @@
 import { ModuleMetadata } from '@nestjs/common/interfaces/modules/module-metadata.interface';
 import { Test, TestingModule } from '@nestjs/testing';
-import { mergeDeep } from '../lib/funtions/util-functions';
+import { mergeDeep } from '../lib/functions/util-functions';
 import { DriverRepository } from '../../boundaries/persistance/repositories/driver/driver.repository';
 import { MockDriverRepository } from './mock-repositories/driver.repository.mock';
 import { InvoiceRepository } from '../../boundaries/persistance/repositories/invoice/invoice.repository';

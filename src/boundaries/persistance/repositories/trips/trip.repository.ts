@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { BaseRepository } from '../base.repository';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Driver } from '../../../../core/driver/models/driver.entity';
 import { Repository } from 'typeorm';
 import { Trip } from '../../../../core/trip/models/trip.entity';
 import { ITripRepository } from './trips-repository.interface';
+import { Nullable } from '../../../../common/types/common.types';
 
 @Injectable()
 export class TripRepository extends BaseRepository<Trip> implements ITripRepository {
-  constructor(@InjectRepository(Driver) private readonly dbContext: Repository<Trip>) {
+  constructor(@InjectRepository(Trip) private readonly dbContext: Repository<Trip>) {
     super();
   }
 
   public async create(entity: Partial<Trip>): Promise<Trip> {
-    return this.dbContext.create(entity);
+    return this.dbContext.save(entity);
   }
 
   public async delete(id: number): Promise<Trip> {
@@ -25,12 +25,19 @@ export class TripRepository extends BaseRepository<Trip> implements ITripReposit
     return await this.dbContext.count({ where: { tripId: id } }) > 0;
   }
 
-  public async read(id: number): Promise<Trip> {
-    return await this.dbContext.findOne({ where: { tripId: id } });
+  public async read(id: number): Promise<Nullable<Trip>> {
+    try {
+      return await this.dbContext.findOne({ where: { tripId: id } });
+    } catch (e) {
+      return null;
+    }
   }
 
   public async readAll(): Promise<Trip[]> {
-    return await this.dbContext.find();
+    return await this.dbContext.find({
+      relations: ['driver', 'passenger', 'invoice'],
+      order: { tripId: 'ASC'}
+    });
   }
 
   public async update(entity: Trip): Promise<Trip> {
@@ -39,6 +46,10 @@ export class TripRepository extends BaseRepository<Trip> implements ITripReposit
 
   public async getAllActiveTrips(): Promise<Trip[]> {
     return await this.dbContext
-      .find({ where: { status: 'Active' } });
+      .find({
+        where: { status: 'Active' },
+        relations:['driver', 'passenger', 'invoice'],
+        order: { tripId: 'ASC'}
+      });
   }
 }

@@ -98,8 +98,7 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
     });
   }
 
-
-  findClosestDrivers(queryLat: number, queryLon: number, entriesToReturn: number): Promise<Driver[]> {
+  public findClosestDrivers(queryLat: number, queryLon: number, entriesToReturn: number): Promise<Driver[]> {
     return new Promise((res) => {
       const driversWithDistances = this.inMemoryDb.filter(driver => driver.isActive).map(driver => {
         const [ driverLon, driverLat] = driver.location.coordinates;
@@ -114,5 +113,9 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
       const closestDrivers = driversWithDistances.sort((a, b) => a.distance - b.distance).slice(0, entriesToReturn).map(item => item.driver);
       res(closestDrivers);
     });
+  }
+
+  public isDriverActive(driverId: number): Promise<boolean> {
+    return Promise.resolve(this.inMemoryDb.some(driver => driver.driverId === driverId && driver.isActive));
   }
 }

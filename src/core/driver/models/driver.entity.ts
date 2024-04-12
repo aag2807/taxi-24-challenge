@@ -1,6 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Trip } from '../../trip/models/trip.entity';
 import { LocationPoint } from '../../../common/models/location-point.model';
+import { Nullable } from '../../../common/types/common.types';
 
 @Entity({ name: 'drivers' })
 export class Driver {
@@ -25,6 +26,6 @@ export class Driver {
   @Column({ type: 'geography', spatialFeatureType: 'Point', srid: 4326, nullable: true })
   public location: LocationPoint;
 
-  @OneToMany(() => Trip, trip => trip.driver, { eager: true })
+  @OneToMany(() => Trip, trip => trip.driver)
   public trips: Trip[];
 }
