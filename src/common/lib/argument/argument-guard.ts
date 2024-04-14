@@ -14,18 +14,6 @@ export class ArgumentGuard
     }
   }
 
-  public static greaterThanOrEqual(val: number, min: number, message: string = 'value is less than min', status = 400) {
-    if (val < min) {
-      throw new ArgumentGuardException(message, status);
-    }
-  }
-
-  public static lessThanOrEqual(val: number, max: number, message: string = 'value is greater than max', status = 400) {
-    if (val > max) {
-      throw new ArgumentGuardException(message, status);
-    }
-  }
-
   public static greaterThan(val: number, min: number, message: string = 'value is less than or equal to min', status = 400) {
     if (val <= min) {
       throw new ArgumentGuardException(message, status);

@@ -5,7 +5,7 @@ import { IInvoiceRepository } from '../../../boundaries/persistance/repositories
 export class MockInvoiceRepository extends BaseRepository<Invoice> implements IInvoiceRepository {
   private inMemoryDb: Invoice[] = [];
 
-  public create(entity: Partial<Invoice>): Promise<Invoice> {
+  public async create(entity: Partial<Invoice>): Promise<Invoice> {
     return new Promise((res) => {
       const invoice: Invoice = new Invoice();
       invoice.invoiceId = this.inMemoryDb.length + 1;
@@ -17,7 +17,7 @@ export class MockInvoiceRepository extends BaseRepository<Invoice> implements II
     });
   }
 
-  public delete(id: number): Promise<Invoice> {
+  public async delete(id: number): Promise<Invoice> {
     return new Promise((rej, res) => {
       const invoice = this.inMemoryDb.find(d => d.invoiceId === id);
       if (invoice) {
@@ -29,7 +29,7 @@ export class MockInvoiceRepository extends BaseRepository<Invoice> implements II
     });
   }
 
-  public exists(id: number): Promise<boolean> {
+  public async exists(id: number): Promise<boolean> {
     return new Promise((res) => {
       const invoice = this.inMemoryDb.find(d => d.invoiceId === id);
       if (invoice) {
@@ -40,7 +40,7 @@ export class MockInvoiceRepository extends BaseRepository<Invoice> implements II
     });
   }
 
-  public read(id: number): Promise<Invoice> {
+  public async read(id: number): Promise<Invoice> {
     return new Promise((res, rej) => {
       const invoice = this.inMemoryDb.find(d => d.invoiceId === id);
       if (invoice) {
@@ -51,11 +51,11 @@ export class MockInvoiceRepository extends BaseRepository<Invoice> implements II
     });
   }
 
-  public readAll(): Promise<Invoice[]> {
+  public async readAll(): Promise<Invoice[]> {
     return Promise.resolve(this.inMemoryDb);
   }
 
-  public update(entity: Invoice): Promise<Invoice> {
+  public async update(entity: Invoice): Promise<Invoice> {
     return new Promise((res, rej) => {
       const invoice = this.inMemoryDb.find(d => d.invoiceId === entity.invoiceId);
       if (invoice) {

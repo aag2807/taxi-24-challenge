@@ -5,7 +5,7 @@ import { IDriverRepository } from '../../../boundaries/persistance/repositories/
 export class MockDriverRepository extends BaseRepository<Driver> implements IDriverRepository {
   private inMemoryDb: Driver[] = [];
 
-  public create(entity: Partial<Driver>): Promise<Driver> {
+  public async create(entity: Partial<Driver>): Promise<Driver> {
     return new Promise((res) => {
       const driver: Driver = new Driver();
       driver.driverId = this.inMemoryDb.length + 1;
@@ -21,7 +21,7 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
     });
   }
 
-  public delete(id: number): Promise<Driver> {
+  public async delete(id: number): Promise<Driver> {
     return new Promise((rej, res) => {
       const driver = this.inMemoryDb.find(d => d.driverId === id);
       if (driver) {
@@ -33,7 +33,7 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
     });
   }
 
-  public exists(id: number): Promise<boolean> {
+  public async exists(id: number): Promise<boolean> {
     return new Promise((res) => {
       const driver = this.inMemoryDb.find(d => d.driverId === id);
       if (driver) {
@@ -44,7 +44,7 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
     });
   }
 
-  public read(id: number): Promise<Driver> {
+  public async read(id: number): Promise<Driver> {
     return new Promise((res) => {
       const driver = this.inMemoryDb.find(d => d.driverId === id);
       if (driver) {
@@ -55,11 +55,11 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
     });
   }
 
-  public readAll(): Promise<Driver[]> {
+  public async readAll(): Promise<Driver[]> {
     return Promise.resolve(this.inMemoryDb);
   }
 
-  public update(entity: Driver): Promise<Driver> {
+  public async update(entity: Driver): Promise<Driver> {
     return new Promise((res, rej) => {
       const driver = this.inMemoryDb.find(d => d.driverId === entity.driverId);
       if (driver) {
@@ -77,13 +77,13 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
     });
   }
 
-  public getAllActiveDrivers(): Promise<Driver[]> {
+  public async getAllActiveDrivers(): Promise<Driver[]> {
     return new Promise((res) => {
       res(this.inMemoryDb.filter(d => d.isActive));
     });
   }
 
-  public findNearbyDrivers(queryLat: number, queryLon: number, radius: number): Promise<Driver[]> {
+  public async findNearbyDrivers(queryLat: number, queryLon: number, radius: number): Promise<Driver[]> {
     const radiusInDegrees = radius / 111000; // Approximate conversion from meters to degrees at the equator
     return new Promise((res) => {
       const nearbyDrivers = this.inMemoryDb.filter(driver => {
@@ -97,7 +97,7 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
     });
   }
 
-  public findClosestDrivers(queryLat: number, queryLon: number, entriesToReturn: number): Promise<Driver[]> {
+  public async findClosestDrivers(queryLat: number, queryLon: number, entriesToReturn: number): Promise<Driver[]> {
     return new Promise((res) => {
       const driversWithDistances = this.inMemoryDb.filter(driver => driver.isActive).map(driver => {
         const [driverLon, driverLat] = driver.location.coordinates;
@@ -114,7 +114,7 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
     });
   }
 
-  public isDriverActive(driverId: number): Promise<boolean> {
+  public async isDriverActive(driverId: number): Promise<boolean> {
     return Promise.resolve(this.inMemoryDb.some(driver => driver.driverId === driverId && driver.isActive));
   }
 }

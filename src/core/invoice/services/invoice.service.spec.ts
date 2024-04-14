@@ -11,7 +11,6 @@ import { Passenger } from '../../passenger/models/passenger.entity';
 
 describe('InvoiceService', () => {
   let service: InvoiceService;
-  let invoiceRepository: InvoiceRepository;
   let tripRepository: TripRepository;
   let driverRepository: DriverRepository;
   let passengerRepository: PassengerRepository;
@@ -22,7 +21,6 @@ describe('InvoiceService', () => {
     });
 
     service = module.get<InvoiceService>(InvoiceService);
-    invoiceRepository = module.get<InvoiceRepository>(InvoiceRepository);
     tripRepository = module.get<TripRepository>(TripRepository);
     driverRepository = module.get<DriverRepository>(DriverRepository);
     passengerRepository = module.get<PassengerRepository>(PassengerRepository);

@@ -22,7 +22,7 @@ export class MockTripRepository extends BaseRepository<Trip> implements ITripRep
     });
   }
 
-  public delete(id: number): Promise<Trip> {
+  public async delete(id: number): Promise<Trip> {
     return new Promise((rej, res) => {
       const trip = this.inMemoryDb.find(d => d.tripId === id);
       if (trip) {
@@ -34,7 +34,7 @@ export class MockTripRepository extends BaseRepository<Trip> implements ITripRep
     });
   }
 
-  public exists(id: number): Promise<boolean> {
+  public async exists(id: number): Promise<boolean> {
     return new Promise((res) => {
       const trip = this.inMemoryDb.find(d => d.tripId === id);
       if (trip) {
@@ -45,7 +45,7 @@ export class MockTripRepository extends BaseRepository<Trip> implements ITripRep
     });
   }
 
-  public read(id: number): Promise<Trip> {
+  public async read(id: number): Promise<Trip> {
     return new Promise((res, rej) => {
       const trip = this.inMemoryDb.find(d => d.tripId === id);
       if (trip) {
@@ -56,11 +56,11 @@ export class MockTripRepository extends BaseRepository<Trip> implements ITripRep
     });
   }
 
-  public readAll(): Promise<Trip[]> {
+  public async readAll(): Promise<Trip[]> {
     return Promise.resolve(this.inMemoryDb);
   }
 
-  public update(entity: Trip): Promise<Trip> {
+  public async update(entity: Trip): Promise<Trip> {
     return new Promise((res, rej) => {
       const trip = this.inMemoryDb.find(d => d.tripId === entity.tripId);
       if (trip) {
@@ -78,7 +78,7 @@ export class MockTripRepository extends BaseRepository<Trip> implements ITripRep
     });
   }
 
-  public getAllActiveTrips(): Promise<Trip[]> {
+  public async getAllActiveTrips(): Promise<Trip[]> {
     return new Promise((res) => {
       res(this.inMemoryDb.filter(d => d.status === 'Active'));
     })
