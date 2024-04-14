@@ -24,7 +24,7 @@ export class PassengerResponse {
     response.fullName = entity.fullName;
     response.email = entity.email;
     response.phoneNumber = entity.phoneNumber;
-    response.trips = TripResponse.fromEntities(entity.trips);
+    response.trips = !!entity?.trips ? TripResponse.fromEntities(entity.trips) : [] ;
 
     return response;
   }
