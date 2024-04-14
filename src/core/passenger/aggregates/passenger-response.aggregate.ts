@@ -1,4 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { TripResponse } from '../../trip/aggregates/trip-response.aggregate';
+import { Passenger } from '../models/passenger.entity';
 
 export class PassengerResponse {
   @ApiProperty({ example: 1, description: 'Unique identifier of the passenger.' })
@@ -14,20 +16,20 @@ export class PassengerResponse {
   public phoneNumber?: string;
 
   @ApiProperty({ example: [], description: 'List of trips the passenger has taken.' })
-  public trips: any[];
+  public trips: TripResponse[];
 
-  public static fromEntity(entity: any): PassengerResponse {
+  public static fromEntity(entity: Passenger): PassengerResponse {
     const response: PassengerResponse = new PassengerResponse();
     response.passengerId = entity.passengerId;
     response.fullName = entity.fullName;
     response.email = entity.email;
     response.phoneNumber = entity.phoneNumber;
-    response.trips = entity.trips;
+    response.trips = TripResponse.fromEntities(entity.trips);
 
     return response;
   }
 
-  public static fromEntities(entities: any[]): PassengerResponse[] {
+  public static fromEntities(entities: Passenger[]): PassengerResponse[] {
     return entities.map((entity: any) => PassengerResponse.fromEntity(entity));
   }
 }

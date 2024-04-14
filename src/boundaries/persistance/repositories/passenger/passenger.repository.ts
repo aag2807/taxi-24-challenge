@@ -27,7 +27,7 @@ export class PassengerRepository extends BaseRepository<Passenger> implements IP
 
   public async read(id: number): Promise<Nullable<Passenger>> {
     try {
-      return await this.dbContext.findOne({ where: { passengerId: id } });
+      return await this.dbContext.findOne({ where: { passengerId: id }, relations: ['trips', 'trips.driver', 'trips.passenger'] }, );
     }
     catch (e) {
       return null;
