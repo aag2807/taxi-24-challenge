@@ -117,4 +117,16 @@ export class MockDriverRepository extends BaseRepository<Driver> implements IDri
   public async isDriverActive(driverId: number): Promise<boolean> {
     return Promise.resolve(this.inMemoryDb.some(driver => driver.driverId === driverId && driver.isActive));
   }
+
+  public async markDriverStatusAs(driverId: number, status: boolean): Promise<void> {
+    return new Promise((res, rej) => {
+      const driver = this.inMemoryDb.find(d => d.driverId === driverId);
+      if (driver) {
+        driver.isActive = status;
+        res();
+      } else {
+        rej();
+      }
+    });
+  }
 }

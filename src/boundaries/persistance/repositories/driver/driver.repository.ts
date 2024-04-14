@@ -80,5 +80,9 @@ export class DriverRepository extends BaseRepository<Driver> implements IDriverR
   public async isDriverActive(driverId: number): Promise<boolean> {
     return await this.dbContext.count({ where: { driverId, isActive: true } }) > 0;
   }
+
+  public async markDriverStatusAs(driverId: number, status: boolean): Promise<void> {
+    await this.dbContext.update({ driverId }, { isActive: status });
+  }
 }
 

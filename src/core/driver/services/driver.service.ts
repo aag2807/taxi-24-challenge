@@ -67,4 +67,10 @@ export class DriverService {
 
     return await this.repo.isDriverActive(driverId);
   }
+
+  public async markDriverAsActiveOrInactive(driverId: number, activityStatus: boolean): Promise<void> {
+    ArgumentGuard.greaterThan(driverId, 0, 'driverId must be greater than 0');
+
+    return await this.repo.markDriverStatusAs(driverId, activityStatus);
+  }
 }

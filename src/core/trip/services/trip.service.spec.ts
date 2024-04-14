@@ -13,6 +13,7 @@ import { PassengerRepository } from '../../../boundaries/persistance/repositorie
 import { CreateTrip } from '../aggregates/create-trip.aggregate';
 import { Coordinate } from '../../../common/models/coordinates.model';
 import { TripResponse } from '../aggregates/trip-response.aggregate';
+import { DriverService } from '../../driver/services/driver.service';
 
 describe('TripService', () => {
   let service: TripService;
@@ -23,7 +24,7 @@ describe('TripService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await TestUtils.configureTestingModule({
-      providers: [TripService, InvoiceService],
+      providers: [TripService, InvoiceService, DriverService],
     });
 
     service = module.get<TripService>(TripService);
@@ -71,7 +72,7 @@ describe('TripService', () => {
       email: 'jane@example.com',
       licenseNumber: 'D67890',
       phoneNumber: '5557654321',
-      isActive: false,
+      isActive: true,
       location: new LocationPoint(1.00, 15.00), // africa
       trips: [],
     });
@@ -89,10 +90,12 @@ describe('TripService', () => {
 
     const trip: TripResponse = await service.createTrip(createTripAggregate);
     const invoice = await invoiceRepository.read(1);
+    const driverAfterTrip = await driverRepository.read(driver.driverId);
 
     expect(trip).toBeDefined();
     expect(invoice).toBeDefined();
     expect(invoice.paymentStatus).toEqual('Pending')
+    expect(driverAfterTrip.isActive).toBeFalsy();
   });
 
   it('should complete a trip', async () => {
@@ -101,7 +104,7 @@ describe('TripService', () => {
       email: 'jane@example.com',
       licenseNumber: 'D67890',
       phoneNumber: '5557654321',
-      isActive: false,
+      isActive: true,
       location: new LocationPoint(1.00, 15.00), // africa
       trips: [],
     });
@@ -121,9 +124,11 @@ describe('TripService', () => {
     await service.completeTrip(trip.tripId);
     const completedTrip = await tripRepository.read(trip.tripId);
     const paidInvoice = await invoiceRepository.read(1);
+    const driverAfterTrip = await driverRepository.read(driver.driverId);
 
     expect(completedTrip.status).toEqual('Completed');
     expect(paidInvoice.paymentStatus).toEqual('Paid')
+    expect(driverAfterTrip.isActive).toBeTruthy();
   });
 
   const createTripWithPassengerAndDriver = async (status: 'Active' | 'Canceled'| 'Completed' = 'Active'): Promise<void> => {

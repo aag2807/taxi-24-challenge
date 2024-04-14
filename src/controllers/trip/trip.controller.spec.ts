@@ -15,6 +15,7 @@ import { InvoiceService } from '../../core/invoice/services/invoice.service';
 import { InvoiceRepository } from '../../boundaries/persistance/repositories/invoice/invoice.repository';
 import { CreateTrip } from '../../core/trip/aggregates/create-trip.aggregate';
 import { Coordinate } from '../../common/models/coordinates.model';
+import { DriverService } from '../../core/driver/services/driver.service';
 
 describe('TripController', () => {
   let app: INestApplication;
@@ -27,7 +28,7 @@ describe('TripController', () => {
   beforeEach(async () => {
     const module: TestingModule = await TestUtils.configureTestingModule({
       controllers: [TripController],
-      providers: [TripService, InvoiceService],
+      providers: [TripService, InvoiceService, DriverService],
     });
 
     app = module.createNestApplication();
@@ -78,7 +79,7 @@ describe('TripController', () => {
       email: 'jane@example.com',
       licenseNumber: 'D67890',
       phoneNumber: '5557654321',
-      isActive: false,
+      isActive: true,
       location: new LocationPoint(1.00, 15.00), // africa
       trips: [],
     });
@@ -112,7 +113,7 @@ describe('TripController', () => {
       email: 'jane@example.com',
       licenseNumber: 'D67890',
       phoneNumber: '5557654321',
-      isActive: false,
+      isActive: true,
       location: new LocationPoint(1.00, 15.00), // africa
       trips: [],
     });

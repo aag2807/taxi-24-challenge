@@ -7,6 +7,8 @@ import { CreateTrip } from '../aggregates/create-trip.aggregate';
 import { ArgumentGuard } from '../../../common/lib/argument/argument-guard';
 import { Invoice } from '../../invoice/models/invoice.entity';
 import { InvoiceResponse } from '../../invoice/models/aggregates/invoice-response.aggregate';
+import { DriverService } from '../../driver/services/driver.service';
+import { StateGuard } from '../../../common/lib/state/state-guard';
 
 @Injectable()
 export class TripService {
@@ -14,6 +16,7 @@ export class TripService {
   constructor(
     private readonly tripRepository: TripRepository,
     private readonly invoiceService: InvoiceService,
+    private readonly driverService: DriverService,
   ) {
   }
 
@@ -30,9 +33,10 @@ export class TripService {
   public async completeTrip(tripId: number): Promise<InvoiceResponse> {
     ArgumentGuard.greaterThan(tripId, 0, 'TripId must be greater than 0');
     const trip: Trip = await this.tripRepository.read(tripId);
-    ArgumentGuard.notNull(trip, 'Trip has to exist in order to complete it')
+    ArgumentGuard.notNull(trip, 'Trip has to exist in order to complete it');
     trip.complete();
     await this.tripRepository.update(trip);
+    await this.driverService.markDriverAsActiveOrInactive(trip.driverId, true);
 
     return await this.invoiceService.payInvoice(trip.invoiceId);
   }
@@ -41,11 +45,15 @@ export class TripService {
     ArgumentGuard.greaterThan(createTripAggregate.passengerId, 0, 'PassengerId must be greater than 0');
     ArgumentGuard.greaterThan(createTripAggregate.driverId, 0, 'DriverId must be greater than 0');
 
-    const trip = await this.tripRepository.create(Trip.fromCreateTripAggregate(createTripAggregate));
+    const isDriverAvailable = await this.driverService.isDriverActive(createTripAggregate.driverId);
+    StateGuard.isTrue(isDriverAvailable, 'Driver is not available for a trip');
+    await this.driverService.markDriverAsActiveOrInactive(createTripAggregate.driverId, false);
+
+    const trip: Trip = await this.tripRepository.create(Trip.fromCreateTripAggregate(createTripAggregate));
     const invoice: Invoice = await this.invoiceService.createNewInvoiceForTrip(trip);
     trip.invoiceId = invoice.invoiceId;
-    await this.tripRepository.update(trip);
+    const updatedTrip: Trip = await this.tripRepository.update(trip);
 
-    return TripResponse.fromEntity(trip);
+    return TripResponse.fromEntity(updatedTrip);
   }
 }

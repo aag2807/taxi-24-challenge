@@ -27,7 +27,7 @@ export class TripRepository extends BaseRepository<Trip> implements ITripReposit
 
   public async read(id: number): Promise<Nullable<Trip>> {
     try {
-      return await this.dbContext.findOne({ where: { tripId: id } });
+      return await this.dbContext.findOne({ where: { tripId: id }, relations: ['driver', 'passenger', 'invoice'] });
     } catch (e) {
       return null;
     }
@@ -41,7 +41,8 @@ export class TripRepository extends BaseRepository<Trip> implements ITripReposit
   }
 
   public async update(entity: Trip): Promise<Trip> {
-    return await this.dbContext.save(entity);
+    await this.dbContext.save(entity);
+    return await this.read(entity.tripId);
   }
 
   public async getAllActiveTrips(): Promise<Trip[]> {
